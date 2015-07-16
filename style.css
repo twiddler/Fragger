@@ -1,0 +1,121 @@
+/* basic design */
+* {
+	border: none;
+	margin: 0px;
+	font-family: "courier new";
+}
+html {
+	min-width: 100%;
+}
+body {
+	margin: 10px;
+	background: rgb(213, 213, 213);
+}
+
+/* put each sequence into a box to seperate them visually */
+.result {
+	box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.18);
+	margin: 10px 0px;
+	padding: 10px;
+	background: white;
+}
+.result+.result {
+	margin-top: 20px;
+}
+
+/* sequences are to be displayed at the beginning in every box, and should break so they don't run off the screen */
+p.sequence {
+	word-wrap: break-word;
+	margin-bottom: 10px;
+}
+p.sequence span {
+	display: inline-block;
+	mix-blend-mode: multiply; /* z-index of objects with opacity shall not influence the resulting color */
+}
+p.sequence span.pos, .pos  {
+	pointer-events: none; /* prevent hover capability */
+	display: none;
+	position: absolute;
+	left: -1px;
+	top: calc(-1em - 2px);
+	background: black;
+	color: white;
+	padding: 0px 2px;
+}
+p.sequence span:hover .pos, .mismatch:hover .pos {
+	display: initial;
+}
+p.sequence span:hover, .mismatch:hover {
+	outline: 1px solid black;
+}
+
+/* style of the bars that indicate the position and width of the fragments and the sequence */
+.mismatch {
+	display: inline-block;
+	height: calc(100% - 2px);
+	background: rgba(255,255,255,0.8);
+	outline: 1px dashed red;
+	min-width: 1px;
+	position: absolute;
+	top: 2px;
+}
+div.sequence p {
+	background: #e5e5e5;
+}
+.alignment {
+	position: relative;
+	text-align: center;
+	z-index: 1;
+	background: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 40%);
+	padding-top: 2px;
+	box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.18);
+}
+.alignments {
+	position: relative;
+}
+.alignment:not(.sequence) {
+	margin-top: 4px;
+}
+.overlay {
+	z-index: 1;
+	background: rgba(0,0,0,0.2);
+	margin: 0px;
+	position: absolute;
+	top: 2px;
+	mix-blend-mode: multiply; /* z-index of objects with opacity shall not influence the resulting color */
+}
+
+/* Indicators for alignment direction */
+/*.alignment::before {
+	height: 100%;
+	content: '';
+	width: 100%;
+	background: linear-gradient(to left, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 100%);
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	z-index: -1;
+}
+.alignment.reverse::before {
+	left: initial;
+	right: -40px;
+	background: linear-gradient(to left, rgba(255,0,0,0.15) 0%,rgba(255,0,0,0) 100%);
+}*/
+
+/* Position and color start and end positions of alignment */
+.alignment p:first-of-type, .alignment p:nth-of-type(2) {
+	background: black;
+	color: white;
+	padding: 0px 2px;
+	float: left;
+}
+.alignment p:nth-of-type(2) {
+	float: right;
+}
+.alignment.reverse p:first-of-type, .alignment.reverse p:nth-of-type(2) {
+	float: right;
+	background-color: red;
+}
+.alignment.reverse p:nth-of-type(2) {
+	float: left;
+}

@@ -1,99 +1,17 @@
-﻿<html>
+<!doctype html>
+<html>
 	<head>
-		<script type="text/javascript">
-// Vergleich
-function compare(a,b) {
-  if (a.start < b.start)
-    return -1;
-  if (a.start > b.start)
-    return 1;
-  if (a.start == b.start) {
-    if (a.end < b.end)
-	  return -1;
-	if (a.end > b.end)
-	  return 1;
-  }
-  return 0;
-}
-
-// Nicht wichtig, nur für debug
-function printNodes(nodes) {
-	console.log("Array contains "+nodes.length+" nodes:");
-	var max = 0;
-	for (var i = 0; i < nodes.length; i++) {
-		var s = "  "+i+": ";
-		for (var j = 0; j < nodes[i].start; j++) {
-			s += " ";
-		}
-		for (var j = 0; j <= nodes[i].end - nodes[i].start; j++) {
-			s += "▬";
-		}
-		console.log(s)
-		max = Math.max(max, nodes[i].end);
-	}
-	var s = "     ";
-	for (var i = 0; i <= max; i++) {
-		s += (i % 5) ? "-" : "|";
-	}
-	console.log(s);
-}
-
-// Ein paar Beispieldaten
-var nodes = []
-for (var i = 0; i<5; i++) {
-	var start = Math.round(Math.random()*10);
-	var end = start + Math.round(Math.random()*5);
-	nodes.push({
-		start: start,
-		end: end,
-		reachables: [],
-		hasParent: false
-	});
-}
-nodes.sort(compare)
-printNodes(nodes)
-
-
-// HIER GEHTS ERST RICHTIG LOS
-
-// origin and nodes themself have to be passed by reference, while the array which holds the nodes needs to be copied so that it may be popped recursively			
-function setReachables(origin, nodes, j) {		
-	var reachables = [];
-	console.log(j);
-	origin["iwashere"] = true;
-	for (var i = 0; i < nodes.length; i++) {
-		var node = nodes[i];
-		if (node.start > origin.end) { // if it starts after, it is reachable
-			reachables.push(node);
-			node.reachables = setReachables(node, nodes.slice(i+1), j+1);
-			console.log("papa?")
-			node.hasParent = true;
-		}
-	}
-	return reachables;
-}
-
-
-for (var i = 0; i < nodes.length-1; i++) {
-	console.log(" ");
-	console.log("nodes["+i+"].reachables = setReachables(nodes["+i+"], nodes.slice("+i+"+1), 0);")
-	printNodes(nodes.slice(i+1));
-	//var newnodes = nodes.slice(i+1);
-	node = nodes[i];
-	if (!node.hasParent) {
-		node.reachables = setReachables(node, nodes.slice(i+1), 0);
-	} else {
-		console.log("  hat schon :)")
-	}
-}
-console.log(nodes);
-
-
-			
-		</script>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="style.css">
+		<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+		<script src="esrever.js"></script>
+		<script src="script.js"></script>
+		<script src="functions.js"></script>
 	</head>
 	
 	<body>
-		<table></table>
+		<div id="summary"></div>
+		<ol id="results">
+		</ol>
 	</body>
 </html>
