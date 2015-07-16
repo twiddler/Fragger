@@ -76,6 +76,69 @@ $(function() {
 		
 		// sort fragments
 		sortfragments(results[i_sequences].alignments); // fragments have to be sorted by starting and end position
+
+function f(fragments,c) {
+	if (c>30) {
+		console.log("abort");
+		return 30;
+	}
+//	console.log(fragments.length)
+	// Collect all starter elements, which are those that cannot be reached from any other fragment from the passed fragments
+	var starters = [];
+	// get maximum end among fragments
+	var max = fragments[0].end;
+	for (var i = 1; i < fragments.length; i++) {
+		max = Math.min(fragments[i].end, max);
+	}
+	// add all fragments whose start is not greater max to the starter set
+	for (var i = fragments.length - 1; i >= 0; i--) {
+		if (fragments[i].start <= max) {
+			starters.unshift(fragments.splice(i,1).pop());
+		}
+	}
+	console.log(starters)
+//	for (var i = fragments.length - 1; i >= 0; i--) {
+//		console.log(fragments[i]);
+//	}
+	
+	// If there are no elements left that could follow the starters
+	if (fragments.length == 0) {
+		return starters;
+	}
+	
+	following = f(fragments,c);
+	var results = [];
+	for (var i = 0; i < starters.length; i++) {
+		for (var j = 0; j < following.length; j++) {
+			results.push([starters[i]].concat(following[j]))
+		}
+	}
+	return results;
+}
+//console.log([{seq:'A'}].concat([{seq:'B'},{seq:'C'}]));
+console.log(f([
+	{
+		start: 0,
+		end: 0,
+		seq: 'A'
+	},
+	{
+		start: 1,
+		end: 3,
+		seq: 'B'
+	},
+	{
+		start: 2,
+		end: 2,
+		seq: 'C'
+	},
+	{
+		start: 3,
+		end: 3,
+		seq: 'D'
+	},
+],0));
+		
 		
 		//hier weitermachen
 		// create possible orders
