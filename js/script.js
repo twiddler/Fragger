@@ -9,7 +9,38 @@ $(function() {
 	//sequences = sequences.concat(sequences);
 	//console.log(sequences.length);
 	//throw 'cowboy in your town.';
+	
+	// Check for correct input
+	try {
+		// Sequences entered as array?
+		if (!(typeof sequences === 'array' || sequences instanceof Array)) {
+			throw 'Sequences are not entered as an array.';
+		}
+		// Is each sequence a string?
+		for (var i = 0; i < sequences.length; i++) {
+			if (!(typeof sequences[i] === 'string' || sequences[i] instanceof String)) {
+				throw 'Sequence '+(i+1).toString()+' is not a string.'
+			}
+		}
 		
+		// Fragments entered as array?
+		if (!(typeof fragments  === 'array' || fragments  instanceof Array)) {
+			throw 'Fragments are not entered as an array.';
+		}
+		for (var i = 0; i < fragments.length; i++) {
+			if (!(typeof fragments[i] === 'array' || fragments[i] instanceof Array)) {
+				throw 'Fragments of sequence '+(i+1).toString()+' are not entered as an array.'
+			}
+			for (var j = 0; j < fragments[i].length; j++) {
+				if (!(typeof fragments[i][j] === 'string' || fragments[i][j] instanceof String)) {
+					throw 'Fragment '+(j+1).toString()+' of sequence '+(i+1).toString()+' is not a string.'
+				}
+			}
+		}
+	} catch(err) {
+		$('#summary').append('<div class="errormessage">'+err+'</div>');
+	}
+	
 	// initialize the counter for how often each fragment has been found, to put out a warning later for fragments that have not been found at all
 	var fragments_found = [];
 	for (var i = 0; i < fragments.length; i++) {

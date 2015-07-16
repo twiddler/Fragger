@@ -119,3 +119,16 @@ div.sequence p {
 .alignment.reverse p:nth-of-type(2) {
 	float: left;
 }
+
+/* Messages */
+.errormessage {
+	background: red;
+	color: white;
+	font-weight: bold;
+	padding: 10px;
+	box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.18);
+}
+.errormessage::before {
+	content: 'Error: ';
+	font-weight: normal;
+}
