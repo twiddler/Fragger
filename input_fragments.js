@@ -1,4 +1,19 @@
-// The fragment library of which the sequences should consist
+// The fragments of which the sequences should consist of. Fragments have to be entered in the following format:
+//
+// var fragments = [
+//   [fragment 1 of sequence A, fragment 2 of sequence A, fragment 3 of sequence A, ...],
+//   [fragment 1 of sequence B, fragment 2 of sequence B, ...],
+//   ...
+// ]
+//
+// Example:
+//
+// var sequences = [
+//   ['ABCD','EF','AADD'],
+//   ['GHH','HIIJKK']
+// ]
+//
+// Do not include any line breaks in the sequences themselves! Sequences have to be encapsulated with 'quotes'.
 
 var fragments = [
 	['CTGCCGACCAGCAATCCGGCACAAGAACTGGAAGCACGTCAGCTGGGTCGTACCACCCGTGATGATCTGATTAATGGTAATAGCGCAAGCTGTGCCGATGTGATTTTTATCTATGCACGT','AGCGCAGCAATTCGTGAAATGCTGGGTCTGTTTCAGCAGGCAAATACCAAATGTCCGGATGCCACC','GCAGCAGCAAGCATTGAAGATCTGGATAGTGCCATTCGTGATAAAATTGCAGGCACCGTTCTGTTTGGCTATACCAAAAATCTGCAGAATCGTGGTCGTATTCCGAATTATCCGGCAGATCGTACCAAAGTTTTTTGCAATACCGGTGATCTGGTTTGT','TATGGTCCTGATGCCCGTGGTCCGGCACCGGAATTTCTGATTGAAAAAGTTCGTGCAGTTCGTGGTAGCGCA'],
