@@ -96,13 +96,18 @@ function f(fragments,c) {
 			starters.unshift(fragments.splice(i,1).pop());
 		}
 	}
+	console.log("starters:")
 	console.log(starters)
+	console.log("")
 //	for (var i = fragments.length - 1; i >= 0; i--) {
 //		console.log(fragments[i]);
 //	}
 	
 	// If there are no elements left that could follow the starters
 	if (fragments.length == 0) {
+		if (c==0) {
+			console.log("result f()")
+		}
 		return starters;
 	}
 	
