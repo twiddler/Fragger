@@ -19,7 +19,7 @@
 */
 function stringsearch(haystack, needle, threshold) {
 	var results = [];
-	var allowed_mismatches = threshold * haystack.length;
+	var allowed_mismatches = threshold * needle.length;
 	
 	// for each position in the haystack
 	for (var i = 0; i <= haystack.length-needle.length; i++) {
@@ -27,14 +27,14 @@ function stringsearch(haystack, needle, threshold) {
 		
 		// for each position in the needle, if there aren't already too many mismatches
 		var j = 0;
-		while (j < needle.length && mismatches.length <= allowed_mismatches) {
+		while ((j < needle.length) && (mismatches.length <= allowed_mismatches)) {
 			if (needle[j] != haystack[i+j]) {
 				mismatches.push(i+j);
 			}
 			j++;
 		}
-		if (j == needle.length && mismatches.length <= allowed_mismatches) {
-		results.push({substr_pos: i, mismatches_pos: mismatches});
+		if ((j == needle.length) && (mismatches.length <= allowed_mismatches)) {
+			results.push({substr_pos: i, mismatches_pos: mismatches});
 		}
 	}
 	return results;

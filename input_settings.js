@@ -1,5 +1,5 @@
 // Allowed mismatches, relative. A threshold of 0.01 means that 1% of a fragments amino acids might be different than expected, that is 1 of 100 amino acids is altered.
-threshold = 0.008;
+threshold = 0.01;
 
 // Colors for the different sequence that the fragments derived from
 fragment_colors = ['rgb(115, 154, 255)','rgb(255, 105, 105)','rgb(40, 203, 40)','rgb(255, 195, 66)','rgb(247, 119, 211)','rgb(125, 222, 239)','rgb(164, 96, 249)','rgb(244, 230, 89)','rgb(62, 240, 186)','rgb(234, 76, 142)'];
