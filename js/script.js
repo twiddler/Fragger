@@ -1,15 +1,6 @@
 $(function() {
 	console.time("Runtime");
 	
-	//sequences = sequences.concat(sequences); // 6 10 s, y=0,0721*x^2+0,6824*x+7,7211
-	//sequences = sequences.concat(sequences); // 12 27 s
-	//sequences = sequences.concat(sequences);
-	//sequences = sequences.concat(sequences); // 48 217
-	//sequences = sequences.concat(sequences); // 96 723
-	//sequences = sequences.concat(sequences);
-	//console.log(sequences.length);
-	//throw 'cowboy in your town.';
-	
 	// Check for correct input
 	try {
 		// Sequences entered as array?
@@ -38,15 +29,33 @@ $(function() {
 			}
 		}
 	} catch(err) {
-		$('#summary').append('<div class="errormessage">'+err+'</div>');
+		$('#summary').append('<div class="message errormessage">'+err+'</div>');
 	}
 	
-	// initialize the counter for how often each fragment has been found, to put out a warning later for fragments that have not been found at all
+	// Initialize the counter for how often each fragment has been found, to put out a warning later for fragments that have not been found at all
+	// Also, reuse colors if there were not enough colors defined, and output a warning
 	var fragments_found = [];
+	var fragment_colors_initial_length = fragment_colors.length; // For later modulo calculation
 	for (var i = 0; i < fragments.length; i++) {
 		fragments_found[i] = [];
 		for (var j = 0; j < fragments[i].length; j++) {
 			fragments_found[i][j] = 0;
+		}
+		
+		// Reuse color
+		if (fragment_colors[i] === undefined) {
+			color = fragment_colors[i % fragment_colors_initial_length];
+			$('#summary').append('<div class="message warningmessage">Not enough different sequence colors defined. <span style="color: rgb('+color[0]+','+color[1]+','+color[2]+')">This color</span> is now used for one more sequence.</div>');
+			fragment_colors.push(color);
+		}
+	}
+	
+	// Create reverse fragments, and store initial fragment numbers for later identification of reversed fragments
+	var fragments_counts = [];
+	for (var i = 0; i < fragments.length; i++) {
+		fragments_counts[i] = fragments[i].length;
+		for (var j = (fragments[i].length - 1); j >= 0; j--) {
+			fragments[i].push(invertsequence(fragments[i][j]));
 		}
 	}
 	
@@ -76,109 +85,7 @@ $(function() {
 		
 		// sort fragments
 		sortfragments(results[i_sequences].alignments); // fragments have to be sorted by starting and end position
-
-function f(fragments,c) {
-	if (c>30) {
-		console.log("abort");
-		return 30;
 	}
-//	console.log(fragments.length)
-	// Collect all starter elements, which are those that cannot be reached from any other fragment from the passed fragments
-	var starters = [];
-	// get maximum end among fragments
-	var max = fragments[0].end;
-	for (var i = 1; i < fragments.length; i++) {
-		max = Math.min(fragments[i].end, max);
-	}
-	// add all fragments whose start is not greater max to the starter set
-	for (var i = fragments.length - 1; i >= 0; i--) {
-		if (fragments[i].start <= max) {
-			starters.unshift(fragments.splice(i,1).pop());
-		}
-	}
-	console.log("starters:")
-	console.log(starters)
-	console.log("")
-//	for (var i = fragments.length - 1; i >= 0; i--) {
-//		console.log(fragments[i]);
-//	}
-	
-	// If there are no elements left that could follow the starters
-	if (fragments.length == 0) {
-		if (c==0) {
-			console.log("result f()")
-		}
-		return starters;
-	}
-	
-	following = f(fragments,c);
-	var results = [];
-	for (var i = 0; i < starters.length; i++) {
-		for (var j = 0; j < following.length; j++) {
-			results.push([starters[i]].concat(following[j]))
-		}
-	}
-	return results;
-}
-//console.log([{seq:'A'}].concat([{seq:'B'},{seq:'C'}]));
-console.log(f([
-	{
-		start: 0,
-		end: 0,
-		seq: 'A'
-	},
-	{
-		start: 1,
-		end: 3,
-		seq: 'B'
-	},
-	{
-		start: 2,
-		end: 2,
-		seq: 'C'
-	},
-	{
-		start: 3,
-		end: 3,
-		seq: 'D'
-	},
-],0));
-		
-		
-		//hier weitermachen
-		// create possible orders
-        console.log(results[i_sequences]);
-        alignments = results[i_sequences].alignments;
-        console.log(alignments);
-		var starters = [alignments[0]];
-		var orders = [];
-		while (starters.length > 0) {
-			var rest = alignments.slice(0); // klonieren
-			//starters.push(alignments.pop());
-			var order = [starters.pop()];
-			/*while (rest.length > 0) {
-                var tail = order[order.length-1];
-				if (rest[0].position > tail.end) {
-					order = [rest.pop()];
-				} else {
-					starters.push(rest.pop());
-                }
-			}*/
-			orders.push(order);
-		}
-		/*while (starters.length > 0) {
-			var rest = alignments.slice(0); // klonieren
-			var order = [starters.pop()];
-			while (rest.length > 0) {
-				if (rest[0].position > wenn das nächste passt
-					order = [rest.pop()];
-				else
-					starters.push(rest.pop());
-			}
-			orders.push(order);
-		}*/
-	}
-	//console.log(results);
 	
 	var html_results = '';
 	// search each fraction in the sequence, and if found, append a bar to show the range
@@ -187,41 +94,52 @@ console.log(f([
 		var result = results[i_sequences];
 		var sequence = result.sequence;
 		
-		// Color each character with the colors of all fragments that would fit here
-		// Iterate over each position in the sequence
+		// SEQUENCE - This is the sequence that is displayed above the alignments
+		// For each position, get colors of fragments that would fit here
 		var html_sequence = '';
+		var pos_colors = [];
 		for (var pos = 0; pos < sequence.length; pos++) {
-			// Insert a span, inside which the following spans with the background can be easily inserted. Every character will be wrapped in at least one span, even uncolored ones.
-			var span_opening = '';
-			var span_closing = '';
-			
 			// for each fragment that could be aligned
 			for (var i = 0; i < result.alignments.length; i++) {
 				var alignment = result.alignments[i];
-				
 				if ((pos >= alignment.position) && (pos < (alignment.position + fragments[alignment.fragment_parent][alignment.fragment].length))) {
-					span_opening += '"><span style="background-color: '+fragment_colors_a[alignment.fragment_parent]+'';
-					span_closing += '</span>';
+					// Add color of current fragment to color list
+					if (pos_colors[pos] === undefined) {
+						pos_colors[pos] = [];
+					}
+					pos_colors[pos].push(fragment_colors[alignment.fragment_parent]);
 				}
+			}
+		}
+		// Display colors and position information
+		for (var pos = 0; pos < sequence.length; pos++) {
+			// Multiply and display colors of all fragments that were aligned to this position
+			var style_colors = '';
+			if (!(pos_colors[pos] === undefined)) {
+				var colors = multiplyRGB(pos_colors[pos]);
+				style_colors = 'background-color: rgba('+colors[0]+','+colors[1]+','+colors[2]+',0.3);';
+			}
+			
+			// Check if there is a mismatch for any of the aligned fragments
+			var style_mismatch = '';
+			for (var i = 0; i < result.alignments.length; i++) {
+				var alignment = result.alignments[i];
 				
 				for (var k = 0; k < alignment.mismatches.length; k++) {
 					if (pos == alignment.mismatches[k]) {
-						span_opening += '"><span style="background: rgba(255,255,255,0.6); outline: 1px dashed red;';
-						span_closing += '</span>';
+						style_mismatch = 'outline: 1px dashed red;';
+						if (!(colors === undefined)) {
+							style_mismatch += 'background-color: rgba('+colors[0]+','+colors[1]+','+colors[2]+',0.1);';
+						}
 					}
 				}
 			}
 			
-			// if there was no fragment covering the current character, insert a span so that the position can be displayed when hovering the character
-			if (span_opening.length > 0) {
-				span_opening = span_opening.substring(2)+'; padding: 4px; position: relative">';
-			} else {
-				span_opening = '<span style="padding: 4px; position: relative">';
-				span_closing = '</span>';
-			}
-			html_sequence += span_opening+sequence[pos]+'<span class="pos">'+(pos+1)+'</span>'+span_closing;
+			// Add character to sequence
+			html_sequence += '<span class="seq_char" style="'+style_colors+style_mismatch+'" data-pos="'+(pos+1)+'">'+sequence[pos]+'</span>';
 		}
 		
+		// ALIGNMENTS
 		var html_alignments = '';
 		for (var i_alignments = 0; i_alignments < result.alignments.length; i_alignments++) {
 			var alignment = result.alignments[i_alignments];
@@ -238,7 +156,15 @@ console.log(f([
 				html_mismatches += '<div class="mismatch" style="width: '+100/length+'%; left: '+(mismatches[l]-position)/length*100+'%;">'+'<span class="pos">'+(mismatches[l]+1)+'</span>'+'</div>'
 			}
 			
-			html_alignments += '<div class="alignment" style="width: '+length_relative+'%; left: '+position_relative+'%;"><p>'+(position+1)+'</p><p>'+(position+length)+'</p><p style="background-color: '+fragment_colors[alignment.fragment_parent]+';">'+(alignment.fragment_parent+1)+'.'+(alignment.fragment+1)+'</p>'+html_mismatches+'</div><div class="overlay" style="width: '+length_relative+'%; left: '+position_relative+'%;background-color: '+fragment_colors[alignment.fragment_parent]+';opacity: 0.3;">&nbsp;</div>';
+			colors = fragment_colors[alignment.fragment_parent];
+			// If fragment was a reversed one, adjust number and add class
+			var class_reverse = '';
+			var offset_reverse = 0;
+			if (alignment.fragment >= fragments_counts[alignment.fragment_parent]) {
+				class_reverse = ' reverse';
+				offset_reverse = fragments_counts[alignment.fragment_parent];
+			}
+			html_alignments += '<div class="alignment'+class_reverse+'" style="width: '+length_relative+'%; left: '+position_relative+'%;"><p>'+(position+1)+'</p><p>'+(position+length)+'</p><p style="background-color: rgb('+colors[0]+','+colors[1]+','+colors[2]+');">'+(alignment.fragment_parent+1)+'.'+(alignment.fragment+1-offset_reverse)+'</p>'+html_mismatches+'</div><div class="overlay" style="width: '+length_relative+'%; left: '+position_relative+'%;background-color: rgb('+colors[0]+','+colors[1]+','+colors[2]+');opacity: 0.3;">&nbsp;</div>';
 			
 			//fragments_found[i][j] = 1;
 		}

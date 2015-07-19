@@ -9,12 +9,12 @@ html {
 }
 body {
 	margin: 10px;
-	background: rgb(213, 213, 213);
+	background: rgb(247, 247, 247);
 }
 
 /* put each sequence into a box to seperate them visually */
 .result {
-	box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.18);
+	box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.1);
 	margin: 10px 0px;
 	padding: 10px;
 	background: white;
@@ -27,12 +27,13 @@ body {
 p.sequence {
 	word-wrap: break-word;
 	margin-bottom: 10px;
+	display: none;
 }
 p.sequence span {
 	display: inline-block;
-	mix-blend-mode: multiply; /* z-index of objects with opacity shall not influence the resulting color */
+	/*p*mix-blend-mode: multiply; /* z-index of objects with opacity shall not influence the resulting color */
 }
-p.sequence span.pos, .pos  {
+p.sequence span.pos, .pos {
 	pointer-events: none; /* prevent hover capability */
 	display: none;
 	position: absolute;
@@ -47,6 +48,25 @@ p.sequence span:hover .pos, .mismatch:hover .pos {
 }
 p.sequence span:hover, .mismatch:hover {
 	outline: 1px solid black;
+	cursor: none;
+}
+.seq_char {
+	padding: 4px;
+	position: static;/**/
+	width: 10px;
+	display: inline-block;
+}
+.seg_char:hover {
+}
+.seq_char:hover::after {
+	content: attr(data-pos);
+	position: absolute;
+	background: black;
+	color: white;
+	margin-top: -26px;
+	margin-left: -15px;
+	padding: 2px;
+	pointer-events: none; /* prevent hover capability */
 }
 
 /* style of the bars that indicate the position and width of the fragments and the sequence */
@@ -66,10 +86,13 @@ div.sequence p {
 	position: relative;
 	text-align: center;
 	z-index: 1;
-	background: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 40%);
+	/*background: linear-gradient(to right, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 40%);/**/
 	padding-top: 2px;
 	box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.18);
 }
+/*.alignment.reverse {
+	background: linear-gradient(to left, rgba(255,0,0,1) 0%, rgba(255,0,0,0) 40%);
+}/**/
 .alignments {
 	position: relative;
 }
@@ -109,6 +132,10 @@ div.sequence p {
 	padding: 0px 2px;
 	float: left;
 }
+.alignment.sequence p:first-of-type, .alignment.sequence p:nth-of-type(2) {
+  background: rgb(197, 197, 197);
+  color: black;
+}
 .alignment p:nth-of-type(2) {
 	float: right;
 }
@@ -121,7 +148,10 @@ div.sequence p {
 }
 
 /* Messages */
-.errormessage {
+.message + .message {
+	margin-top: 10px;
+}
+.errormessage, .warningmessage {
 	background: red;
 	color: white;
 	font-weight: bold;
@@ -130,5 +160,14 @@ div.sequence p {
 }
 .errormessage::before {
 	content: 'Error: ';
+	font-weight: normal;
+}
+
+.warningmessage {
+	background: yellow;
+	color: black;
+}
+.warningmessage::before {
+	content: 'Warning: ';
 	font-weight: normal;
 }

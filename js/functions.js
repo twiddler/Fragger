@@ -77,3 +77,20 @@ function sortfragments_compare(a,b) {
 function sortfragments(alignments) {
 	return alignments.sort(sortfragments_compare);
 }
+
+// Multiplies RGB colors, supplied as array
+function multiplyRGB(colors) {
+	var n = colors.length;
+	if (n == 1) {
+		return colors[0];
+	}
+	var r = 255;
+	var g = 255;
+	var b = 255;
+	for (var i = 0; i < n; i++) {
+		r *= colors[i][0]/255;
+		g *= colors[i][1]/255;
+		b *= colors[i][2]/255;
+	}
+	return [Math.round(r),Math.round(g),Math.round(b)];
+}
