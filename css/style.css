@@ -37,16 +37,23 @@ input[type="checkbox"] {
 }
 .result {
 	position: relative;
-	padding-left: 20px;
+	padding-left: 35px;
 }
 input[type="checkbox"] + label {
 	position: absolute;
-	padding: 2px;
+	padding: 7px;
 	background: rgb(229, 229, 229);
 	vertical-align: middle;
 	top: 0px;
 	bottom: 0px;
 	left: 0px;
+	display: table-cell;
+	color: rgb(179, 179, 179);
+}
+input[type="checkbox"] + label:hover {
+	background: white;
+	outline: 1px solid gray;
+	color: black;
 }
 p.sequence span {
 	display: inline-block;
