@@ -170,7 +170,7 @@ $(function() {
 		}
 		
 		// insert sequence and full width bar
-		html_results += '<li class="result"><p class="sequence">'+html_sequence+'</p><div class="alignments"><div class="alignment sequence"><p>'+1+'</p><p>'+sequence.length+'</p><p>&nbsp;</p></div>'+html_alignments+'</div></li>';
+		html_results += '<li class="result"><input type="checkbox" id="c'+i_sequences+'"/><label for="c'+i_sequences+'">></label><p class="sequence">'+html_sequence+'</p><div class="alignments"><div class="alignment sequence"><p>'+1+'</p><p>'+sequence.length+'</p><p>&nbsp;</p></div>'+html_alignments+'</div></li>';
 	}
 	$("#results").html(html_results);
 	

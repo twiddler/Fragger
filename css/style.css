@@ -29,6 +29,25 @@ p.sequence {
 	margin-bottom: 10px;
 	display: none;
 }
+input:checked +label + p.sequence {
+	display: initial;
+}
+input[type="checkbox"] {
+	display: none;/**/
+}
+.result {
+	position: relative;
+	padding-left: 20px;
+}
+input[type="checkbox"] + label {
+	position: absolute;
+	padding: 2px;
+	background: rgb(229, 229, 229);
+	vertical-align: middle;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+}
 p.sequence span {
 	display: inline-block;
 	/*p*mix-blend-mode: multiply; /* z-index of objects with opacity shall not influence the resulting color */
