@@ -1,5 +1,16 @@
 $(function() {
+	// If this is not the first run, do not run this script again
+	var first_run = $('meta[data-first-run="1"]');
+	if (!first_run.length) {
+		return;
+	}
+	first_run.remove();
+	
+	// Measure performance
 	console.time("Runtime");
+	
+	// Put current date, time, and number of sequences in title
+	$('title').html((new Date).datetime()+'_'+sequences.length+'seq_fragmentsearch');
 	
 	// Check for correct input
 	try {
